@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Window - Wikipedia Digest</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light Mode Variables */
+            --bg-color: #f8f8f7;
+            --text-color: #2c2c2c;
+            --card-bg-color: #ffffff;
+            --card-border-color: #dddddd;
+            --card-hover-border-color: #bbbbbb; /* Not directly used for single display */
+            --title-color: #1a1a1a;
+            --meta-text-color: #6b6b6b;
+            --subtle-text-color: #777;
+            --link-color: #555;
+            --link-hover-color: #1a202c;
+            --icon-button-color: #555;
+            --icon-button-hover-color: #000;
+            --icon-button-hover-bg-color: rgba(0,0,0,0.05);
+            --separator-color: #ccc;
+            --scrollbar-track-color: #ececec;
+            --scrollbar-thumb-color: #c5c5c5;
+            --scrollbar-thumb-hover-color: #b0b0b0;
+            --article-content-bg: #fdf5e6; /* Old paper for content area */
+            --article-text-color: #333333;
+            --article-title-color: #111111;
+            --article-link-color: #5a4a3b;
+            --article-link-hover-color: #000000;
+            --article-border-color: #d3c0a5;
+        }
+
+        body.dark-mode {
+            /* Dark Mode Variable Overrides */
+            --bg-color: #1a1d24; 
+            --text-color: #d1d5db; 
+            --card-bg-color: #252a34; 
+            --card-border-color: #374151; 
+            --card-hover-border-color: #4b5563; 
+            --title-color: #f3f4f6; 
+            --meta-text-color: #9ca3af; 
+            --subtle-text-color: #9ca3af;
+            --link-color: #9ca3af;
+            --link-hover-color: #e5e7eb; 
+            --icon-button-color: #9ca3af;
+            --icon-button-hover-color: #f3f4f6;
+            --icon-button-hover-bg-color: rgba(255,255,255,0.08);
+            --separator-color: #555;
+            --scrollbar-track-color: #252a34;
+            --scrollbar-thumb-color: #4b5563;
+            --scrollbar-thumb-hover-color: #6b7280;
+            --article-content-bg: #2c303a; /* Darker paper for dark mode */
+            --article-text-color: #c0c5ce;
+            --article-title-color: #e5e7eb;
+            --article-link-color: #a0aec0;
+            --article-link-hover-color: #e2e8f0;
+            --article-border-color: #4a5568;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden; 
+            position: relative; 
+            transition: background-color 0.4s ease, color 0.4s ease; 
+        }
+        .header-main-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            letter-spacing: 0.01em; 
+            color: var(--title-color); 
+            padding-bottom: 0.25rem; 
+            display: inline-block; 
+            transition: color 0.4s ease;
+        }
+
+        /* Wikipedia Content Display Area */
+        .wikipedia-content-area {
+            background-color: var(--article-content-bg);
+            border: 1px solid var(--article-border-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 2rem 2.5rem; /* Generous padding */
+            margin: 0 auto; /* Centered */
+            max-width: 900px; /* Max width for readability */
+            border-radius: 8px;
+            opacity: 0; 
+            transform: translateY(20px); 
+            transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease, opacity 0.6s ease-out, transform 0.6s ease-out;
+            overflow-y: auto; /* Scroll for long articles */
+            max-height: 70vh; /* Limit height to prevent page takeover */
+        }
+        .wikipedia-content-area.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .wikipedia-content-area h2 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--article-title-color);
+            font-size: 2em; /* Prominent title */
+            margin-bottom: 0.75em;
+            line-height: 1.3;
+            border-bottom: 1px solid var(--article-border-color);
+            padding-bottom: 0.5em;
+            transition: color 0.4s ease, border-color 0.4s ease;
+        }
+        .wikipedia-content-area p {
+            font-size: 1rem; 
+            line-height: 1.75; 
+            color: var(--article-text-color);
+            margin-bottom: 1.25em;
+            transition: color 0.4s ease;
+        }
+        .wikipedia-content-area a {
+            color: var(--article-link-color); 
+            text-decoration: none; 
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 2px;
+            transition: color 0.3s ease;
+        }
+        .wikipedia-content-area a::after { 
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1.5px; 
+            bottom: 0;
+            left: 0;
+            background-color: var(--article-link-hover-color); 
+            transition: width 0.35s ease-out, background-color 0.4s ease;
+        }
+        .wikipedia-content-area a:hover {
+            color: var(--article-link-hover-color); 
+        }
+        .wikipedia-content-area a:hover::after {
+            width: 100%;
+        }
+
+        /* Action Buttons & Indicators (from Konflict) */
+        .action-buttons-container {
+            position: fixed; top: 16px; left: 16px; z-index: 1000; display: flex; align-items: center; gap: 8px;
+        }
+        .icon-button {
+            background-color: transparent; border: none; width: 30px; height: 30px; border-radius: 50%; 
+            transition: background-color 0.3s ease, transform 0.2s ease; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; padding: 0;
+        }
+        .icon-button .icon { 
+            width: 16px; height: 16px; stroke: var(--icon-button-color); 
+            transition: stroke 0.3s ease, transform 0.3s ease;
+        }
+        .icon-button:hover { background-color: var(--icon-button-hover-bg-color); }
+        .icon-button:hover .icon { stroke: var(--icon-button-hover-color); }
+        .icon-button:hover .icon.refresh-icon { transform: rotate(90deg); }
+        .icon-button:active { transform: scale(0.90); }
+        .icon-button:focus-visible { outline: 2px solid #667EEA; outline-offset: 1px; background-color: var(--icon-button-hover-bg-color); }
+        .dark-mode-toggle-button .sun-icon { display: inline-block; }
+        .dark-mode-toggle-button .moon-icon { display: none; }
+        body.dark-mode .dark-mode-toggle-button .sun-icon { display: none; }
+        body.dark-mode .dark-mode-toggle-button .moon-icon { display: inline-block; }
+        .action-button-separator {
+            width: 3px; height: 3px; background-color: var(--separator-color); border-radius: 50%;
+            margin: 0 3px; transition: background-color 0.4s ease;
+        }
+        .indicator-text {
+            color: var(--meta-text-color); font-weight: 500; font-family: 'Lora', serif;
+            transition: color 0.4s ease;
+        }
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+        #loadingIndicator.animated { animation: pulse 1.5s infinite ease-in-out; }
+        .error-text {
+            color: #b91c1c; font-weight: 500; font-family: 'Lora', serif; border: 1px dashed #b91c1c; 
+            padding: 1rem; background-color: #fef2f2; 
+            transition: color 0.4s ease, border-color 0.4s ease, background-color 0.4s ease;
+        }
+        body.dark-mode .error-text {
+            color: #fca5a5; border-color: #ef4444; background-color: #3f2121; 
+        }
+        .footer-text {
+            color: var(--subtle-text-color); font-size: 0.825rem; font-family: 'Lora', serif;
+            transition: color 0.4s ease;
+        }
+        .footer-text a { color: var(--link-color); text-decoration: none; transition: color 0.4s ease; }
+        .footer-text a:hover { text-decoration: underline; color: var(--link-hover-color); }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--scrollbar-track-color); }
+        ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb-color); border-radius: 4px;}
+        ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover-color); }
+    </style>
+</head>
+<body>
+    <div class="action-buttons-container">
+        <button id="darkModeToggle" class="icon-button dark-mode-toggle-button" aria-label="Toggle dark mode" aria-checked="false">
+            <svg class="icon sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+            </svg>
+            <svg class="icon moon-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"> 
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+            </svg>
+        </button>
+        <span class="action-button-separator"></span>
+        <button id="refreshContent" class="icon-button update-content-button" aria-label="Refresh Content">
+            <svg class="icon refresh-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+        </button>
+    </div>
+
+    <header role="banner" class="py-12 pt-20 md:pt-24"> 
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="header-main-title text-4xl md:text-5xl">The Window.</h1> 
+        </div>
+    </header>
+
+    <main role="main" class="container mx-auto px-6">
+        <div id="wikipediaContentContainer" class="wikipedia-content-area" aria-live="polite">
+            </div>
+        <div id="loadingIndicator" role="status" aria-live="assertive" class="text-center py-16 text-lg indicator-text" style="display: none;">
+            Peering through the mists of knowledge...
+        </div>
+        <div id="errorIndicator" role="alert" aria-live="assertive" class="text-center py-16" style="display: none;">
+            </div>
+    </main>
+
+    <footer role="contentinfo" class="text-center py-16 mt-12 border-t" style="border-color: var(--separator-color);">
+        <p class="footer-text">&copy; <span id="currentYear"></span> The Window. All views are fleeting.</p>
+        <p class="footer-text mt-1">Powered by Wikipedia. Inspired by curiosity.</p>
+    </footer>
+
+    <script>
+        // --- DOM Elements ---
+        const wikipediaContentContainerEl = document.getElementById('wikipediaContentContainer');
+        const refreshButtonEl = document.getElementById('refreshContent');
+        const loadingIndicatorEl = document.getElementById('loadingIndicator');
+        const errorIndicatorEl = document.getElementById('errorIndicator');
+        const currentYearSpanEl = document.getElementById('currentYear');
+        const darkModeToggleEl = document.getElementById('darkModeToggle');
+
+        // --- Dark Mode Logic (from Konflict) ---
+        function enableDarkMode() {
+            document.body.classList.add('dark-mode');
+            darkModeToggleEl.setAttribute('aria-checked', 'true');
+            try { localStorage.setItem('darkMode', 'enabled'); } 
+            catch (e) { console.warn("localStorage not available for saving dark mode preference."); }
+        }
+
+        function disableDarkMode() {
+            document.body.classList.remove('dark-mode');
+            darkModeToggleEl.setAttribute('aria-checked', 'false');
+            try { localStorage.setItem('darkMode', 'disabled'); } 
+            catch (e) { console.warn("localStorage not available for saving dark mode preference."); }
+        }
+
+        function toggleDarkMode() {
+            if (document.body.classList.contains('dark-mode')) disableDarkMode();
+            else enableDarkMode();
+        }
+        
+        try {
+            if (localStorage.getItem('darkMode') === 'enabled') enableDarkMode();
+            else disableDarkMode(); 
+        } catch (e) {
+            console.warn("localStorage not available; defaulting to light mode.");
+            disableDarkMode(); 
+        }
+
+        // --- Wikipedia Fetching Logic ---
+        async function fetchWikipediaArticle() {
+            loadingIndicatorEl.style.display = 'block';
+            loadingIndicatorEl.classList.add('animated');
+            wikipediaContentContainerEl.style.display = 'none'; // Hide old content
+            wikipediaContentContainerEl.classList.remove('animate-in');
+            errorIndicatorEl.style.display = 'none';
+            errorIndicatorEl.innerHTML = '';
+
+
+            const apiUrl = "https://en.wikipedia.org/api/rest_v1/page/random/summary";
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.status}`);
+                }
+                const data = await response.json();
+
+                if (data.title && data.extract_html && data.content_urls?.desktop?.page) {
+                    const title = data.title.replace(/_/g, ' ');
+                    const summaryHtml = data.extract_html; 
+                    const articleUrl = data.content_urls.desktop.page;
+
+                    wikipediaContentContainerEl.innerHTML = `
+                        <h2>${title}</h2>
+                        ${summaryHtml}
+                        <p style="text-align:right; margin-top:2em;">
+                            <a href="${articleUrl}" target="_blank" rel="noopener noreferrer">
+                                Read full article on Wikipedia &raquo;
+                            </a>
+                        </p>
+                    `;
+                    wikipediaContentContainerEl.style.display = 'block';
+                     // Force reflow before adding class for animation
+                    void wikipediaContentContainerEl.offsetWidth;
+                    wikipediaContentContainerEl.classList.add('animate-in');
+
+                } else {
+                    throw new Error("Wikipedia API returned incomplete data for the article.");
+                }
+
+            } catch (error) {
+                console.error("Error fetching Wikipedia article:", error);
+                errorIndicatorEl.innerHTML = `<p class="error-text">Could not fetch a view from Wikipedia: ${error.message}. Please try again.</p>`;
+                errorIndicatorEl.style.display = 'block';
+            } finally {
+                loadingIndicatorEl.style.display = 'none';
+                loadingIndicatorEl.classList.remove('animated');
+            }
+        }
+
+        // --- Event Listeners & Initialization ---
+        refreshButtonEl.addEventListener('click', fetchWikipediaArticle);
+        darkModeToggleEl.addEventListener('click', toggleDarkMode);
+        darkModeToggleEl.addEventListener('keydown', (event) => { 
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault(); 
+                toggleDarkMode();
+            }
+        });
+        
+        if (currentYearSpanEl) {
+            currentYearSpanEl.textContent = new Date().getFullYear();
+        }
+        
+        document.addEventListener('DOMContentLoaded', fetchWikipediaArticle);
+    </script>
+</body>
+</html>
